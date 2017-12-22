@@ -21,11 +21,28 @@ const Stars = (props) => {
   }
   
   const Button = (props) => {
+    let button, buttonClass;
+    switch(props.answerIsCorrect) {
+      case true:
+        buttonClass = "btn-success"
+        button = 
+          <i className="fa fa-check"></i>
+        break;
+      case false:
+        buttonClass = "btn-danger"
+        button = 
+          <i className="fa fa-times"></i>
+        break;
+      default:
+        buttonClass = "btn-primary"
+        button = "="
+        break;
+    }
     return (
-    <div className="col-2">
-      <button className="btn" onClick={props.onClick} disabled={props.selectedNumbers.length === 0}>=</button>
-    </div>
-    );
+      <div className="col-2">
+        <button className={`btn ${buttonClass}`} onClick={props.checkAnswer} disabled={props.selectedNumbers.length === 0}>{button}</button>
+      </div>
+      );
   }
   
   const Numbers = (props) => {
@@ -51,7 +68,8 @@ const Stars = (props) => {
   class Game extends React.Component {
     state = {
       selectedNumbers: [],
-      randomNumberOfStars: 1 + Math.floor(Math.random() * 9)
+      randomNumberOfStars: 1 + Math.floor(Math.random() * 9),
+      answerIsCorrect: null
     };
     
     selectNumber = (number) => {
@@ -60,7 +78,7 @@ const Stars = (props) => {
           selectedNumbers: prevState.selectedNumbers.concat(number)
         }));
       }
-    }
+    };
     
     deselectNumber = (number) => {
       if (this.state.selectedNumbers.includes(number)) {
@@ -70,22 +88,23 @@ const Stars = (props) => {
           // return arr;  
         });
       }
-    }
+    };
     
     checkAnswer = () => {
-      var sum = this.state.selectedNumbers.reduce((a, b) => a + b, 0);
-      return sum === this.state.randomNumberOfStars;
-    }
+      this.setState((prevState) => ({
+          answerIsCorrect: prevState.randomNumberOfStars === prevState.selectedNumbers.reduce((a,b) => a + b, 0)
+      }));
+    };
     
     render() {
-    const { selectedNumbers, randomNumberOfStars } = this.state;
+    const { selectedNumbers, randomNumberOfStars, answerIsCorrect } = this.state;
       return (
         <div className="container">
           <h3>Play Nine</h3>
           <hr/>
           <div className="row">
             <Stars numberOfStars={randomNumberOfStars}/>
-            <Button onClick={this.checkAnswer} selectedNumbers={selectedNumbers}/>
+            <Button checkAnswer={this.checkAnswer} answerIsCorrect={answerIsCorrect} selectedNumbers={selectedNumbers} />
             <Answer deselectNumber={this.deselectNumber} selectedNumbers={selectedNumbers}/>
           </div>
           <br/>
