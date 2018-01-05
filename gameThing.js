@@ -75,6 +75,7 @@ const Stars = (props) => {
     selectNumber = (number) => {
       if (!this.state.selectedNumbers.includes(number)) {
         this.setState((prevState) => ({
+          answerIsCorrect: null,
           selectedNumbers: prevState.selectedNumbers.concat(number)
         }));
       }
@@ -83,10 +84,10 @@ const Stars = (props) => {
     deselectNumber = (number) => {
       if (this.state.selectedNumbers.includes(number)) {
         const index = this.state.selectedNumbers.indexOf(number);
-        this.setState((prevState) => {
-          return prevState.selectedNumbers.splice(index,1);
-          // return arr;  
-        });
+        this.setState((prevState) => ({
+          answerIsCorrect: null,
+          selectedNumbers: prevState.selectedNumbers.filter(number => number !== clickedNumber)
+        }));
       }
     };
     
